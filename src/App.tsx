@@ -5,14 +5,19 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { Button } from "@/components/ui/button";
 import { InputGroup, InputGroupAddon, InputGroupInput } from "@/components/ui/input-group";
 import { Toaster } from "@/components/ui/sonner";
-import ShortcutCard from "./components/shortcut/card";
-import type { Shortcut } from "./types/shortcut";
-import { getData } from "./lib/storage";
 import AddCategoryCard from "./components/category/add";
+import ShortcutCard from "./components/shortcut/card";
+import { getData } from "./lib/storage";
+import type { Shortcut } from "./types/shortcut";
 
 export function App() {
   const [query, setQuery] = useState("");
   const [shortcuts, setShortcuts] = useState<Shortcut[]>([]);
+
+  const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setQuery(e.target.value);
+    document.title = e.target.value ? `${e.target.value} - New Tab` : "New Tab";
+  };
 
   useEffect(() => {
     const fetchedShortcuts = () => getData<Shortcut>("shortcuts");
@@ -45,8 +50,9 @@ export function App() {
               </InputGroupAddon>
               <InputGroupInput
                 id="search-input"
+                className="transition-all duration-300 delay-0 ease-in-out focus:w-72 w-96"
                 value={query}
-                onChange={(e) => setQuery(e.target.value)}
+                onChange={handleInput}
                 placeholder="Search..."
                 autoComplete="off"
                 autoCapitalize="off"

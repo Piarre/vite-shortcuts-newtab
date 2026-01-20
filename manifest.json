@@ -1,0 +1,9 @@
+{
+  "manifest_version": 3,
+  "name": "Chrome Shortcuts",
+  "version": "1.0.0",
+  "description": "Chrome Extension to replace the new tab page with a shortcuts page.",
+  "chrome_url_overrides": {
+    "newtab": "index.html"
+  }
+}

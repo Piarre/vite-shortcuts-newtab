@@ -12,11 +12,12 @@ export default defineConfig({
     },
   },
   build: {
-    outDir: "out",
     rollupOptions: {
-      input: {
-        index: path.resolve(__dirname, "index.html"),
-      },
+      output: {
+        entryFileNames: "assets/[name].js",
+        chunkFileNames: "assets/[name].js",
+        assetFileNames: "assets/[name].[ext]",
+      }
     },
   },
 });

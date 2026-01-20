@@ -1,8 +1,8 @@
 import { Edit, Trash } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { deleteData } from "@/lib/storage";
 import type { Shortcut } from "@/types/shortcut";
 import { Button } from "../ui/button";
-import { deleteData } from "@/lib/storage";
 
 const ShortcutCard = ({ id, title, url, iconUrl }: Shortcut) => {
   return (
