@@ -1,29 +1,37 @@
 import { Search, Settings } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useMemo, useState } from "react";
 import AddShortcutCard from "@/components/shortcut/add";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Button } from "@/components/ui/button";
 import { InputGroup, InputGroupAddon, InputGroupInput } from "@/components/ui/input-group";
 import { Toaster } from "@/components/ui/sonner";
 import AddCategoryCard from "./components/category/add";
+import CategoryCard from "./components/category/card";
 import ShortcutCard from "./components/shortcut/card";
 import { getData } from "./lib/storage";
+import type { Category } from "./types/category";
 import type { Shortcut } from "./types/shortcut";
 
 export function App() {
   const [query, setQuery] = useState("");
-  const [shortcuts, setShortcuts] = useState<Shortcut[]>([]);
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
   const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     setQuery(e.target.value);
     document.title = e.target.value ? `${e.target.value} - New Tab` : "New Tab";
   };
 
-  useEffect(() => {
-    const fetchedShortcuts = () => getData<Shortcut>("shortcuts");
+  const shortcuts: Shortcut[] = useMemo(() => getData<Shortcut>("shortcuts"), []);
+  const categories: Category[] = useMemo(() => getData<Category>("categories"), []);
 
-    setShortcuts(fetchedShortcuts());
-  }, []);
+  const filteredShortcuts = useMemo(() => {
+    if (!selectedCategory) return shortcuts;
+
+    return shortcuts.filter((shortcut) => {
+      const category = categories.find((cat) => cat.shortcutIds?.includes(shortcut.id ?? ""));
+      return category?.id === selectedCategory;
+    });
+  }, [shortcuts, categories, selectedCategory]);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -67,7 +75,30 @@ export function App() {
           <AddShortcutCard />
         </header>
 
-        <main className="mt-10 grid grid-cols-3 gap-5">{shortcuts.map((shortcut) => ShortcutCard(shortcut))}</main>
+        {categories.length > 0 && (
+          <div className="mt-6 flex w-full max-w-3xl gap-2 overflow-x-auto px-2">
+            <CategoryCard
+              key={"all"}
+              title="All"
+              onClick={() => setSelectedCategory(null)}
+              isActive={selectedCategory === null}
+            />
+            {categories.map((category) => (
+              <CategoryCard
+                {...category}
+                key={category.id}
+                onClick={() => setSelectedCategory(category.id ?? "")}
+                isActive={selectedCategory === category.id}
+              />
+            ))}
+          </div>
+        )}
+
+        <main className="mt-10 grid grid-cols-3 gap-5">
+          {filteredShortcuts.map((shortcut) => (
+            <ShortcutCard key={shortcut.id} {...shortcut} />
+          ))}
+        </main>
       </div>
       <Toaster />
     </ThemeProvider>

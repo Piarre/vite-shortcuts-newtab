@@ -1,6 +1,6 @@
 import { useForm } from "@tanstack/react-form";
 import { Plus } from "lucide-react";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { toast } from "sonner";
 import z from "zod";
 import { Button } from "@/components/ui/button";
@@ -13,23 +13,38 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Field, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field";
+import { Field, FieldContent, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { saveData } from "@/lib/storage";
+import { getData, saveData, updateData } from "@/lib/storage";
 import type { Shortcut } from "@/types/shortcut";
+import type { Category } from "@/types/category";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectSeparator,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
 
 const formSchema = z.object({
   title: z.string().min(1, "Name is required"),
   url: z.url("Invalid or missing URL"),
+  category: z.string().optional(),
 });
 
 const AddShortcutCard = () => {
   const [open, setOpen] = useState<boolean>(false);
 
+  const existingCategories = useMemo(() => getData<Category>("categories"), []);
+
   const form = useForm({
     defaultValues: {
       title: "",
       url: "",
+      category: "",
     },
     validators: {
       onSubmit: formSchema,
@@ -42,11 +57,27 @@ const AddShortcutCard = () => {
         return `https://www.google.com/s2/favicons?sz=128&domain=${domain}`;
       };
 
-      saveData<Shortcut>("shortcuts", {
+      const newShortcut: Shortcut = {
         title: value.title,
         url: value.url,
         iconUrl: iconUrl(),
-      });
+      };
+
+      saveData<Shortcut>("shortcuts", newShortcut);
+
+      // Associate shortcut with category if one is selected
+      if (value.category) {
+        const categories = getData<Category>("categories");
+        const selectedCategory = categories.find((cat) => cat.id === value.category);
+
+        if (selectedCategory) {
+          const updatedCategory = {
+            ...selectedCategory,
+            shortcutIds: [...(selectedCategory.shortcutIds || []), newShortcut.id!],
+          };
+          updateData<Category>("categories", updatedCategory);
+        }
+      }
 
       setOpen(false);
       toast.success("Shortcut added successfully!");
@@ -70,7 +101,15 @@ const AddShortcutCard = () => {
           <Plus />
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-106.25">
+      <DialogContent
+        onKeyDown={(e) => {
+          if (e.key === "Enter") {
+            e.preventDefault();
+            form.handleSubmit();
+          }
+        }}
+        className="sm:max-w-106.25"
+      >
         <DialogHeader>
           <DialogTitle>New shortcut</DialogTitle>
         </DialogHeader>
@@ -105,7 +144,7 @@ const AddShortcutCard = () => {
 
               return (
                 <Field data-invalid={isInvalid}>
-                  <FieldLabel htmlFor={field.name}>Shortcut name</FieldLabel>
+                  <FieldLabel htmlFor={field.name}>Shortcut URL</FieldLabel>
                   <Input
                     id={field.name}
                     name={field.name}
@@ -117,6 +156,39 @@ const AddShortcutCard = () => {
                     autoComplete="off"
                   />
                   {isInvalid && <FieldError errors={field.state.meta.errors} />}
+                </Field>
+              );
+            }}
+          />
+          <form.Field
+            name="category"
+            children={(field) => {
+              const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
+
+              return (
+                <Field data-invalid={isInvalid}>
+                  <FieldContent>
+                    <FieldLabel htmlFor={field.name}>Category (optional)</FieldLabel>
+                    {isInvalid && <FieldError errors={field.state.meta.errors} />}
+                  </FieldContent>
+                  <Select name={field.name} value={field.state.value} onValueChange={field.handleChange}>
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Select a category" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectGroup>
+                        <SelectLabel>Category</SelectLabel>
+                        <SelectSeparator />
+                        {existingCategories.map((category) => (
+                          <SelectItem key={category.id} value={category.id ?? ""}>
+                            {category.title}
+                          </SelectItem>
+                        ))}
+                        <SelectSeparator />
+                        <SelectItem value=" ">None</SelectItem>
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
                 </Field>
               );
             }}

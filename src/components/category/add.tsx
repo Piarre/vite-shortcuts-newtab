@@ -83,7 +83,7 @@ const AddCategoryCard = () => {
       }}
     >
       <DialogTrigger asChild>
-        <Button variant="outline" size="icon" disabled>
+        <Button variant="outline" size="icon">
           <FolderPlus />
         </Button>
       </DialogTrigger>
