@@ -40,9 +40,11 @@ interface AddShortcutCardProps {
 }
 
 const AddShortcutCard = ({ onSuccess }: AddShortcutCardProps) => {
+  const [refreshKey, setRefreshKey] = useState(0);
   const [open, setOpen] = useState<boolean>(false);
 
-  const existingCategories = useMemo(() => getData<Category>("categories"), []);
+  // biome-ignore lint/correctness/useExhaustiveDependencies: need to refresh categories on open
+  const existingCategories = useMemo(() => getData<Category>("categories"), [refreshKey]);
 
   const form = useForm({
     defaultValues: {
@@ -51,6 +53,7 @@ const AddShortcutCard = ({ onSuccess }: AddShortcutCardProps) => {
       category: "",
     },
     validators: {
+      // @ts-expect-error: for an optional field
       onSubmit: formSchema,
     },
     onSubmit: ({ value }) => {
@@ -94,6 +97,7 @@ const AddShortcutCard = ({ onSuccess }: AddShortcutCardProps) => {
     <Dialog
       open={open}
       onOpenChange={(open) => {
+        setRefreshKey((prev) => prev + 1);
         setOpen(open);
         if (!open) {
           form.reset();

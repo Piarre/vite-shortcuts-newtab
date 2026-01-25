@@ -1,3 +1,4 @@
+/** biome-ignore-all lint/correctness/useExhaustiveDependencies: need to refresh categories on open */
 import { Settings } from "lucide-react";
 import { useMemo, useState } from "react";
 import AddShortcutCard from "@/components/shortcut/add";
