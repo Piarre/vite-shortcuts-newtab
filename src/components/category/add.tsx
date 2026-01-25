@@ -23,6 +23,10 @@ const formSchema = z.object({
   color: z.string("Invalid or missing color"),
 });
 
+interface AddCategoryCardProps {
+  onSuccess?: () => void;
+}
+
 const COLOR_PALETTE: string[] = [
   "#ef4444",
   "#f97316",
@@ -46,7 +50,7 @@ const COLOR_PALETTE: string[] = [
   "#78716c",
 ];
 
-const AddCategoryCard = () => {
+const AddCategoryCard = ({ onSuccess }: AddCategoryCardProps) => {
   const [open, setOpen] = useState<boolean>(false);
 
   const form = useForm({
@@ -66,8 +70,9 @@ const AddCategoryCard = () => {
       setOpen(false);
       toast.success("Category added successfully!", {
         description: value.title,
-        closeButton: true
+        closeButton: true,
       });
+      onSuccess?.();
 
       form.reset();
     },

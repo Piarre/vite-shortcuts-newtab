@@ -18,11 +18,11 @@ const CategoryCard = ({ id, title, color, shortcutIds, isActive, onClick }: Cate
       variant="ghost"
       onClick={onClick}
     >
-      {color && <div id={id} className="size-3 rounded-full shrink-0" style={{ backgroundColor: color }} />}
+      {color && <div id={id} className="size-3 shrink-0" style={{ backgroundColor: color }} />}
       <span className="text-sm font-medium">{title}</span>
-      {shortcutIds && shortcutIds.length > 0 && (
+      {shortcutIds && (
         <Badge variant="outline" className="ml-auto text-xs">
-          {shortcutIds.length}
+          {shortcutIds.length ?? 0} 
         </Badge>
       )}
     </Button>

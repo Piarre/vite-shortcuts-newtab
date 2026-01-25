@@ -35,7 +35,11 @@ const formSchema = z.object({
   category: z.string().optional(),
 });
 
-const AddShortcutCard = () => {
+interface AddShortcutCardProps {
+  onSuccess?: () => void;
+}
+
+const AddShortcutCard = ({ onSuccess }: AddShortcutCardProps) => {
   const [open, setOpen] = useState<boolean>(false);
 
   const existingCategories = useMemo(() => getData<Category>("categories"), []);
@@ -65,7 +69,6 @@ const AddShortcutCard = () => {
 
       saveData<Shortcut>("shortcuts", newShortcut);
 
-      // Associate shortcut with category if one is selected
       if (value.category) {
         const categories = getData<Category>("categories");
         const selectedCategory = categories.find((cat) => cat.id === value.category);
@@ -81,6 +84,7 @@ const AddShortcutCard = () => {
 
       setOpen(false);
       toast.success("Shortcut added successfully!");
+      onSuccess?.();
 
       form.reset();
     },
@@ -198,7 +202,13 @@ const AddShortcutCard = () => {
           <DialogClose asChild>
             <Button variant="outline">Cancel</Button>
           </DialogClose>
-          <Button onClick={() => form.handleSubmit()}>Save changes</Button>
+          <Button
+            onClick={() => {
+              form.handleSubmit();
+            }}
+          >
+            Save changes
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

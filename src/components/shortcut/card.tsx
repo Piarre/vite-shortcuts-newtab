@@ -1,14 +1,18 @@
 import { Edit, Trash } from "lucide-react";
 import { useMemo } from "react";
+import { toast } from "sonner";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { deleteData, getData } from "@/lib/storage";
+import { deleteData, getData, updateData } from "@/lib/storage";
 import type { Category } from "@/types/category";
 import type { Shortcut } from "@/types/shortcut";
-import { Button } from "../ui/button";
 import DeleteDialog from "../delete-dialog";
-import { toast } from "sonner";
+import { Button } from "../ui/button";
 
-const ShortcutCard = ({ id, title, url, iconUrl }: Shortcut) => {
+interface ShortcutCardProps extends Shortcut {
+  onSuccess?: () => void;
+}
+
+const ShortcutCard = ({ id, title, url, iconUrl, onSuccess }: ShortcutCardProps) => {
   const color = useMemo(() => {
     if (!id) return "#FFFFFF00";
 
@@ -25,7 +29,11 @@ const ShortcutCard = ({ id, title, url, iconUrl }: Shortcut) => {
     >
       <CardHeader className="flex flex-row justify-between space-y-0 pb-2 top-0">
         {iconUrl && <img src={iconUrl} alt={title} className="size-9" />}
-        <div id={id} className="size-3 group-hover/shortcut:opacity-0 transition-opacity rounded-full shrink-0" style={{ backgroundColor: color }} />
+        <div
+          id={id}
+          className="size-3 group-hover/shortcut:opacity-0 transition-opacity shrink-0"
+          style={{ backgroundColor: color }}
+        />
       </CardHeader>
       <CardContent>
         <CardTitle className="text-sm truncate">{title}</CardTitle>
@@ -49,8 +57,20 @@ const ShortcutCard = ({ id, title, url, iconUrl }: Shortcut) => {
         <DeleteDialog
           title="Delete shortcut?"
           description="This action cannot be undone."
+          onSuccess={onSuccess}
           onDelete={() => {
             deleteData<Shortcut>("shortcuts", `${id}`);
+            getData<Category>("categories").forEach((category) => {
+              if (category.shortcutIds?.includes(id ?? "")) {
+                const updatedShortcutIds = category.shortcutIds?.filter((sid) => sid !== id) ?? [];
+
+                updateData<Category>("categories", {
+                  ...category,
+                  shortcutIds: updatedShortcutIds,
+                });
+              }
+            });
+
             toast.success("Shortcut deleted successfully!");
           }}
         >

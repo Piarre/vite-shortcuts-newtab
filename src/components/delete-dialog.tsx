@@ -17,9 +17,10 @@ interface DeleteDialogProps extends PropsWithChildren {
   title: string;
   description: string;
   onDelete: () => void;
+  onSuccess?: () => void;
 }
 
-const DeleteDialog = ({ title, description, onDelete, children }: DeleteDialogProps) => {
+const DeleteDialog = ({ title, description, onDelete, onSuccess, children }: DeleteDialogProps) => {
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>{children}</AlertDialogTrigger>
@@ -40,6 +41,7 @@ const DeleteDialog = ({ title, description, onDelete, children }: DeleteDialogPr
             onClick={(e) => {
               e.stopPropagation();
               onDelete();
+              onSuccess?.();
             }}
           >
             Delete
