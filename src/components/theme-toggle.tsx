@@ -61,7 +61,7 @@ export const AnimatedThemeToggler = ({ className, duration = 400, ...props }: An
   }, [isDark, duration]);
 
   return (
-    <Button variant="outline" ref={buttonRef} onClick={toggleTheme} className={cn(className)} {...props}>
+    <Button variant="outline" size="icon" ref={buttonRef} onClick={toggleTheme} className={cn(className)} {...props}>
       {isDark ? <Sun /> : <Moon />}
       <span className="sr-only">Toggle theme</span>
     </Button>

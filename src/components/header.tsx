@@ -1,8 +1,7 @@
-import { Settings } from "lucide-react";
-import { Button } from "./ui/button";
 import AddCategoryCard from "./category/add";
 import AddShortcutCard from "./shortcut/add";
 import { AnimatedThemeToggler } from "./theme-toggle";
+import SettingsDialog from "./settings-dialogs";
 
 interface HeaderProps {
   setRefreshKey: React.Dispatch<React.SetStateAction<number>>;
@@ -11,9 +10,7 @@ interface HeaderProps {
 const Header = ({ setRefreshKey }: HeaderProps) => {
   return (
     <header className="flex  items-center justify-center flex-row gap-4">
-      <Button variant="outline" size="icon" disabled>
-        <Settings />
-      </Button>
+      <SettingsDialog />
       <AnimatedThemeToggler />
       <AddCategoryCard onSuccess={() => setRefreshKey((prev) => prev + 1)} />
       <AddShortcutCard onSuccess={() => setRefreshKey((prev) => prev + 1)} />
