@@ -26,7 +26,7 @@ export function App() {
   }, [shortcuts, categories, selectedCategory]);
 
   return (
-    <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+    <ThemeProvider defaultTheme="dark">
       <div className="h-screen w-screen bg-background text-foreground flex flex-col p-8">
         <Header setRefreshKey={setRefreshKey} />
 
