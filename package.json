@@ -1,13 +1,14 @@
 {
   "name": "chrome-shortcuts-tab",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.1",
   "type": "module",
   "scripts": {
     "dev": "bunx --bun vite",
     "build": "tsc -b && bunx --bun vite build && bun run archive.ts",
     "lint": "biome check src/",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "release": "bumpp && git push origin main --tags && bunx --bun vite build && bun run archive.ts"
   },
   "dependencies": {
     "@base-ui/react": "^1.1.0",
@@ -38,6 +39,7 @@
     "@types/react": "^19.2.5",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^5.1.1",
+    "bumpp": "^10.4.0",
     "eslint": "^9.39.1",
     "eslint-plugin-react-hooks": "^7.0.1",
     "eslint-plugin-react-refresh": "^0.4.24",
