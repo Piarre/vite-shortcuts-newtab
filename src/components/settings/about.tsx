@@ -6,7 +6,7 @@ import SettingsBaseComponent from "./base";
 
 const data = {
   appName: "Shortcuts New Tab",
-  version: "1.0.1",
+  version: import.meta.env.APP_VERSION,
   links: [
     {
       label: "Source Code",

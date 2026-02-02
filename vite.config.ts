@@ -2,6 +2,7 @@ import path from "path";
 import tailwindcss from "@tailwindcss/vite";
 import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
+import pkg from "./package.json";
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -17,7 +18,10 @@ export default defineConfig({
         entryFileNames: "assets/[name].js",
         chunkFileNames: "assets/[name].js",
         assetFileNames: "assets/[name].[ext]",
-      }
+      },
     },
+  },
+  define: {
+    "import.meta.env.APP_VERSION": JSON.stringify(pkg.version),
   },
 });
