@@ -10,7 +10,7 @@ interface HeaderProps {
 const Header = ({ setRefreshKey }: HeaderProps) => {
   return (
     <header className="flex  items-center justify-center flex-row gap-4">
-      <SettingsDialog />
+      <SettingsDialog setRefreshKey={setRefreshKey} />
       <AnimatedThemeToggler />
       <AddCategoryCard onSuccess={() => setRefreshKey((prev) => prev + 1)} />
       <AddShortcutCard onSuccess={() => setRefreshKey((prev) => prev + 1)} />

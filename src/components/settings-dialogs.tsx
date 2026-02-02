@@ -26,7 +26,7 @@ import ImportExportData from "./settings/import-export-data";
 import { Button } from "./ui/button";
 
 const NAV = [
-  { title: "Data", icon: DatabaseZap, disabled: true, component: ImportExportData },
+  { title: "Data", icon: DatabaseZap, disabled: false, component: ImportExportData },
   {
     title: "About",
     icon: BadgeInfo,
@@ -36,7 +36,11 @@ const NAV = [
 ] as const;
 type NavItemTitle = (typeof NAV)[number]["title"];
 
-export function SettingsDialog() {
+interface SettingsDialogProps {
+  setRefreshKey: React.Dispatch<React.SetStateAction<number>>;
+}
+
+export function SettingsDialog({ setRefreshKey }: SettingsDialogProps) {
   const [activeTab, setActiveTab] = useState<NavItemTitle>("About");
   const [open, setOpen] = useState(false);
 
@@ -93,7 +97,18 @@ export function SettingsDialog() {
                 </Breadcrumb>
               </div>
             </header>
-            {NAV.find((item) => item.title === activeTab)?.component({ title: activeTab })}
+            {NAV.map((item) => {
+              const Component = item.component;
+              const props =
+                item.title === "Data"
+                  ? { title: item.title, onSuccess: () => setRefreshKey((prev) => prev + 1) }
+                  : { title: item.title };
+              return (
+                <div key={item.title} className={item.title === activeTab ? "contents" : "hidden"}>
+                  <Component {...props} />
+                </div>
+              );
+            })}
           </main>
         </SidebarProvider>
       </DialogContent>

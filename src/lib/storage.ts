@@ -30,4 +30,12 @@ const updateData = <T extends { id?: string }>(key: StorageData, updatedItem: T)
   localStorage.setItem(key, JSON.stringify(updatedData));
 };
 
-export { getData, saveData, deleteData, updateData };
+const clearAll = () => {
+  localStorage.clear();
+};
+
+const setAllData = <T>(key: StorageData, data: T[]) => {
+  localStorage.setItem(key, JSON.stringify(data));
+};
+
+export { getData, saveData, deleteData, updateData, clearAll, setAllData };

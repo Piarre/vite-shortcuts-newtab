@@ -24,7 +24,7 @@ const ShortcutCard = ({ id, title, url, iconUrl, onSuccess }: ShortcutCardProps)
   return (
     <Card
       id={id}
-      className="group/shortcut relative hover:scale-105 hover:shadow-accent hover:shadow-2xl w-40 h-32 cursor-pointer transition-all"
+      className="group/shortcut relative hover:scale-105 hover:shadow-accent hover:shadow-2xl h-32 w-full cursor-pointer transition-all"
       onClick={() => window.open(url, "_blank")}
     >
       <CardHeader className="flex flex-row justify-between space-y-0 pb-2 top-0">
