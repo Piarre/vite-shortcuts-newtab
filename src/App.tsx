@@ -49,7 +49,7 @@ export function App() {
           </div>
         )}
 
-        <main className="mt-10 grid grid-cols-3 gap-5">
+        <main className="mt-10 grid grid-cols-8 gap-8">
           {filteredShortcuts.map((shortcut) => (
             <ShortcutCard key={shortcut.id} {...shortcut} onSuccess={() => setRefreshKey((prev) => prev + 1)} />
           ))}
