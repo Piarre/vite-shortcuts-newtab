@@ -1,14 +1,15 @@
 {
   "name": "chrome-shortcuts-tab",
   "private": true,
-  "version": "1.0.1",
+  "version": "1.0.2",
   "type": "module",
   "scripts": {
     "dev": "bunx --bun vite",
-    "build": "tsc -b && bunx --bun vite build && bun run archive.ts",
+    "build": "tsc -b && bunx --bun vite build && bun run archive",
+    "archive": "zip -r dist/build.zip folder_to_compress",
     "lint": "biome check src/",
     "preview": "vite preview",
-    "release": "bumpp && git push origin main --tags && bunx --bun vite build && bun run archive.ts"
+    "release": "bumpp package.json public/manifest.json && git push origin main --tags && bunx --bun vite build && bun run archive"
   },
   "dependencies": {
     "@base-ui/react": "^1.1.0",
